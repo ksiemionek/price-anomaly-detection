@@ -94,7 +94,7 @@ def create_labels_advanced(df):
     return df
 
 
-def get_model_pipeline(model_type="baseline"):
+def get_model_pipeline(model_type):
     numeric_cols = [
         "number_of_reviews",
         "review_scores_rating",
@@ -115,10 +115,10 @@ def get_model_pipeline(model_type="baseline"):
         (num_pipe, numeric_cols), (cat_pipe, categorical_cols)
     )
 
-    if model_type == "baseline":
-        model = LogisticRegression()
-    elif model_type == "random_forest":
-        model = RandomForestClassifier()
+    if model_type == 'baseline':
+        model = LogisticRegression(class_weight='balanced')
+    elif model_type == 'target':
+        model = RandomForestClassifier(class_weight='balanced')
     else:
         raise ValueError("Wrong model type")
 
