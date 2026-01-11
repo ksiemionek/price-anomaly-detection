@@ -1,4 +1,5 @@
 import pickle
+from random import choice
 
 from sklearn.metrics import precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -61,6 +62,10 @@ def run_ab_tests():
     print("-" * 10 + "BUSSINESS RESULTS" + "-" * 10)
     print(f"Current bookings (sessions): {current_bookings}")
     print(f"Projected growth: {growth_pct:.2%}")
+
+
+def spank():
+    print(choice(["ow", "au", "Auu!", "Ouch!", "ah!"]))
 
 
 if __name__ == "__main__":
