@@ -15,6 +15,7 @@ def run_ab_tests():
     with open("model_target.pkl", "rb") as fh:
         model = pickle.load(fh)
 
+    # group A, group B
     group_ctrl, group_exp = train_test_split(df, test_size=0.5, random_state=67)
 
     features = [
@@ -37,9 +38,29 @@ def run_ab_tests():
     precision = precision_score(y_true, y_pred)
     recall = recall_score(y_true, y_pred)
 
-    print("-" * 10 + "RESULTS" + "-" * 10)
+    print("-" * 10 + "ANALYTICAL RESULTS" + "-" * 10)
     print(f"Precision: {precision:.2%}")
     print(f"Recall: {recall:.2%}")
+
+    current_bookings = group_exp["session_count"].sum()
+    recovered_bookings = 0
+
+    y_true_arr = y_true.to_numpy()
+    sessions_arr = group_exp["session_count"].to_numpy()
+
+    for i in range(len(y_pred)):
+        if y_pred[i] == 1 and y_true_arr[i] == 1:
+            # We assume that 25% of notified offers will regulate their price and thus result in a recovered sale
+            recovered_bookings += sessions_arr[i] * 0.25
+
+    projected_bookings = current_bookings + recovered_bookings
+
+    growth = projected_bookings - current_bookings
+    growth_pct = growth / current_bookings
+
+    print("-" * 10 + "BUSSINESS RESULTS" + "-" * 10)
+    print(f"Current bookings (sessions): {current_bookings}")
+    print(f"Projected growth: {growth_pct:.2%}")
 
 
 if __name__ == "__main__":
