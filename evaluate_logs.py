@@ -2,6 +2,8 @@ import json
 
 import pandas as pd
 
+from utilities import spank
+
 LOG_FILE = "prediction_logs.jsonl"
 
 
@@ -16,6 +18,8 @@ def evaluate_logs():
                     data.append(json.loads(line))
     except FileNotFoundError:
         print("Log file not found.")
+        for i in range(2):
+            spank()
         return
 
     if not data:

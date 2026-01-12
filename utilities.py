@@ -122,6 +122,8 @@ def get_model_pipeline(model_type):
     elif model_type == "target":
         model = RandomForestClassifier(class_weight="balanced")
     else:
+        for i in range(3):
+            spank()
         raise ValueError("Wrong model type")
 
     return make_pipeline(preprocessor, model)

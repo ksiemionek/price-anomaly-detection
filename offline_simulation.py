@@ -63,6 +63,10 @@ def run_ab_tests():
     print(f"Current bookings (sessions): {current_bookings}")
     print(f"Projected growth: {growth_pct:.2%}")
 
+    if growth_pct < 0.03:
+        for i in range(2):
+            siemionek_kacper.spank()
+
 
 if __name__ == "__main__":
     run_ab_tests()

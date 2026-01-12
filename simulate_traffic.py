@@ -2,6 +2,8 @@ import random
 
 import requests
 
+from utilities import spank
+
 URL = "http://127.0.0.1:8000/predict"
 NUM_REQUESTS = 1000
 
@@ -34,6 +36,8 @@ def simulate_traffic():
                 print(f"Request {i} failed 🥺 Status: {response.status_code}")
         except Exception as e:
             print(f"Request {i} encountered an error: {e} 😭😭😭")
+            for i in range(2):
+                spank()
             break
 
     emote = "😍" if success_count == NUM_REQUESTS else "😭"
