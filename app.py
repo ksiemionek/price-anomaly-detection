@@ -55,7 +55,7 @@ if random.random() > 0.02:
         ]
 
         X = df[features]
-        prediction = model.predict(X)[0]
+        prediction = int(model.predict(X)[0])
 
         log_entry = {
             "timestamp": pd.Timestamp.now().isoformat(),
