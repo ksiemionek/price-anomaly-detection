@@ -46,13 +46,14 @@ def run_ab_tests():
     current_bookings = group_exp["session_count"].sum()
     recovered_bookings = 0
 
+    normal_sessions = df[df["is_suspicious"] == 0]["session_count"].mean()
+
     y_true_arr = y_true.to_numpy()
-    sessions_arr = group_exp["session_count"].to_numpy()
 
     for i in range(len(y_pred)):
         if y_pred[i] == 1 and y_true_arr[i] == 1:
             # We assume that 25% of notified offers will regulate their price and thus result in a recovered sale
-            recovered_bookings += sessions_arr[i] * 0.25
+            recovered_bookings += normal_sessions * 0.25
 
     projected_bookings = current_bookings + recovered_bookings
 
