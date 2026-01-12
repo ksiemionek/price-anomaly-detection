@@ -1,17 +1,19 @@
-import pandas as pd
+from random import choice
+
 import numpy as np
-from sklearn.pipeline import make_pipeline
+import pandas as pd
 from sklearn.compose import make_column_transformer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.ensemble import IsolationForest, RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, IsolationForest
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 def load_data():
-    listings = pd.read_csv(f"data/listings.csv.zst")
-    calendar = pd.read_csv(f"data/calendar.csv.zst")
-    sessions = pd.read_csv(f"data/sessions.csv.zst")
+    listings = pd.read_csv("data/listings.csv.zst")
+    calendar = pd.read_csv("data/calendar.csv.zst")
+    sessions = pd.read_csv("data/sessions.csv.zst")
     return listings, calendar, sessions
 
 
@@ -115,11 +117,15 @@ def get_model_pipeline(model_type):
         (num_pipe, numeric_cols), (cat_pipe, categorical_cols)
     )
 
-    if model_type == 'baseline':
-        model = LogisticRegression(class_weight='balanced')
-    elif model_type == 'target':
-        model = RandomForestClassifier(class_weight='balanced')
+    if model_type == "baseline":
+        model = LogisticRegression(class_weight="balanced")
+    elif model_type == "target":
+        model = RandomForestClassifier(class_weight="balanced")
     else:
         raise ValueError("Wrong model type")
 
     return make_pipeline(preprocessor, model)
+
+
+def spank():
+    print(choice(["ow", "au", "Auu!", "Ouch!", "ah!"]))
