@@ -53,9 +53,13 @@ def evaluate_logs():
         print("No log entries found. 😭")
         return
 
-    df = pd.DataFrame(data)
-    df = prepare_data(df)
-    df = create_labels_advanced(df)
+    try:
+        df = pd.DataFrame(data)
+        df = prepare_data(df)
+        df = create_labels_advanced(df)
+    except Exception as e:
+        print(f"Error creating DataFrame: {e} 😭😭😭")
+        return
 
     print("\n" + "-" * 10 + "A/B TEST RESULTS" + "-" * 10)
     print(f"total predictions: {len(df)}")
@@ -83,11 +87,18 @@ def evaluate_logs():
         tp = ((group_df["prediction"] == 1) & (group_df["is_suspicious"] == 1)).sum()
         fp = ((group_df["prediction"] == 1) & (group_df["is_suspicious"] == 0)).sum()
 
+        total_impostors = group_df["is_suspicious"].sum()
+
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        recall = tp / total_impostors if total_impostors > 0 else 0.0
+
         print(f"- Total interventions: {tp + fp}")
-        print(f"- Valid: {tp}")
-        print(f"- Invalid: {fp}")
-        print(f"- Precision: {precision:.2%}")
+        print(f"- Actual sus count: {total_impostors}")
+        print(f"- Valid (TP): {tp}")
+        print(f"- Invalid (FP): {fp}")
+        print(f"- Missed (FN): {total_impostors - tp}")
+        print(f"= Precision: {precision:.2%}")
+        print(f"= Recall: {recall:.2%}")
 
 
 if __name__ == "__main__":
