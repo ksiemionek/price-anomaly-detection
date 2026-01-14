@@ -29,7 +29,7 @@ def generate_random_safe():
 
 def generate_random_suspicious():
     avg_price = random.uniform(500, 5000)
-    max_price = avg_price + random.uniform(100, 2000)
+    max_price = avg_price + random.uniform(0, 2000)
 
     return {
         "number_of_reviews": random.randint(0, 5),
