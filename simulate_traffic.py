@@ -9,12 +9,16 @@ NUM_REQUESTS = 1000
 
 
 def generate_random_listing():
+    avg_price = random.uniform(50, 1000)
+    max_price = avg_price + random.uniform(0, 500)
+
     return {
         "number_of_reviews": random.randint(0, 500),
         "review_scores_rating": random.uniform(0, 100),
         "host_is_superhost_int": random.randint(0, 1),
         "availability_365": random.randint(0, 365),
-        "avg_price_calendar": random.uniform(50, 1000),
+        "avg_price_calendar": avg_price,
+        "max_price_calendar": max_price,
         "std_price_calendar": random.uniform(0, 300),
         "session_count": random.randint(0, 100),
         "price_vs_neighbourhood": random.uniform(0.3, 3.0),
