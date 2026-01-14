@@ -1,4 +1,5 @@
 import json
+import os
 import pickle
 import random
 
@@ -10,9 +11,9 @@ app = FastAPI()
 
 if random.random() > 0.02:
     print("Loading models...")
-    with open("model_baseline.pkl", "rb") as fh:
+    with open("models/model_baseline.pkl", "rb") as fh:
         model_baseline = pickle.load(fh)
-    with open("model_target.pkl", "rb") as fh:
+    with open("models/model_target.pkl", "rb") as fh:
         model_target = pickle.load(fh)
     print("Models loaded :)")
 
@@ -66,7 +67,8 @@ if random.random() > 0.02:
             "prediction": int(prediction),
         }
 
-        with open("prediction_logs.jsonl", "a") as fh:
+        os.makedirs("logs", exist_ok=True)
+        with open("logs/prediction_logs.jsonl", "a") as fh:
             fh.write(json.dumps(log_entry) + "\n")
 
         return {

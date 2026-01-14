@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report
 
 from utilities import create_labels_advanced, spank
 
-LOG_FILE = "prediction_logs.jsonl"
+LOG_FILE = "logs/prediction_logs.jsonl"
 
 
 def prepare_data(df):

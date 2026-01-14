@@ -1,7 +1,10 @@
+import os
 import pickle
-import utilities
-from sklearn.model_selection import train_test_split
+
 from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+
+import utilities
 
 listings, calendar, sessions = utilities.load_data()
 df = utilities.prepare_data(listings, calendar, sessions)
@@ -19,8 +22,8 @@ cols = [
     "reviews_per_month",
     "session_count",
 ]
-
-suspects[cols].to_csv("suspects.csv", index=False)
+os.makedirs("logs", exist_ok=True)
+suspects[cols].to_csv("logs/suspects.csv", index=False)
 
 features = [
     "number_of_reviews",
@@ -51,7 +54,8 @@ model_rf = utilities.get_model_pipeline("target")
 model_rf.fit(X_train, y_train)
 print(classification_report(y_test, model_rf.predict(X_test), zero_division=0))
 
-with open("model_baseline.pkl", "wb") as f:
+os.makedirs("models", exist_ok=True)
+with open("models/model_baseline.pkl", "wb") as f:
     pickle.dump(model_base, f)
-with open("model_target.pkl", "wb") as f:
+with open("models/model_target.pkl", "wb") as f:
     pickle.dump(model_rf, f)
