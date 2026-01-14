@@ -130,4 +130,4 @@ def get_model_pipeline(model_type):
 
 
 def spank():
-    print(choice(["ow", "au", "Auu!", "Ouch!", "ah!"]))
+    print(choice(["ow", "au", "Auu!", "Ouch!", "ah!", "🥺", "😭"]))
