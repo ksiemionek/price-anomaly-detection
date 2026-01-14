@@ -2,3 +2,4 @@ data/
 __pycache__/
 suspects.csv
 prediction_logs.jsonl
+/.venv/
