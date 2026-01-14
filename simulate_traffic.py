@@ -5,7 +5,7 @@ import requests
 from utilities import spank
 
 URL = "http://127.0.0.1:8000/predict"
-NUM_REQUESTS = 1000
+NUM_REQUESTS = 5000
 IMPOSTOR_RATE = 0.05
 TRICKY_RATE = 0.25
 
