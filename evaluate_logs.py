@@ -79,7 +79,7 @@ def evaluate_logs():
                 group_df["is_suspicious"],
                 group_df["prediction"],
                 labels=[0, 1],
-                target_names=["crewmate ඞ", "impostor ඞ"],
+                target_names=["crewmate", "impostor"],
                 zero_division=0,
             )
         )
