@@ -22,6 +22,7 @@ if random.random() > 0.02:
         host_is_superhost_int: int
         availability_365: int
         avg_price_calendar: float
+        max_price_calendar: float
         std_price_calendar: float
         session_count: int
         price_vs_neighbourhood: float
