@@ -79,7 +79,7 @@ def evaluate_logs():
                 group_df["is_suspicious"],
                 group_df["prediction"],
                 labels=[0, 1],
-                target_names=["crewmate", "impostor"],
+                target_names=["safe", "suspicious"],
                 zero_division=0,
             )
         )
@@ -89,16 +89,16 @@ def evaluate_logs():
 
         total_impostors = group_df["is_suspicious"].sum()
 
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        recall = tp / total_impostors if total_impostors > 0 else 0.0
+        # precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        # recall = tp / total_impostors if total_impostors > 0 else 0.0
 
-        print(f"- Total interventions: {tp + fp}")
-        print(f"- Actual sus count: {total_impostors}")
-        print(f"- Valid (TP): {tp}")
-        print(f"- Invalid (FP): {fp}")
-        print(f"- Missed (FN): {total_impostors - tp}")
-        print(f"= Precision: {precision:.2%}")
-        print(f"= Recall: {recall:.2%}")
+        # # print(f"- Total interventions: {tp + fp}")
+        # # print(f"- Actual sus count: {total_impostors}")
+        # # print(f"- Valid (TP): {tp}")
+        # # print(f"- Invalid (FP): {fp}")
+        # # print(f"- Missed (FN): {total_impostors - tp}")
+        # # print(f"= Precision: {precision:.2%}")
+        # # print(f"= Recall: {recall:.2%}")
 
 
 if __name__ == "__main__":
