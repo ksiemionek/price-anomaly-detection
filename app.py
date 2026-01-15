@@ -9,72 +9,54 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-if random.random() > 0.02:
-    print("Loading models...")
-    with open("models/model_baseline.pkl", "rb") as fh:
-        model_baseline = pickle.load(fh)
-    with open("models/model_target.pkl", "rb") as fh:
-        model_target = pickle.load(fh)
-    print("Models loaded :)")
+print("Loading models...")
+with open("models/model_baseline.pkl", "rb") as fh:
+    model_baseline = pickle.load(fh)
+with open("models/model_target.pkl", "rb") as fh:
+    model_target = pickle.load(fh)
+print("Models loaded")
 
-    class ListingData(BaseModel):
-        number_of_reviews: int
-        review_scores_rating: float
-        host_is_superhost_int: int
-        availability_365: int
-        avg_price_calendar: float
-        max_price_calendar: float
-        std_price_calendar: float
-        session_count: int
-        price_vs_neighbourhood: float
-        room_type: str
 
-    @app.post("/predict")
-    def predict(data: ListingData) -> dict:
-        input_data = data.model_dump()
+class ListingData(BaseModel):
+    number_of_reviews: int
+    listing_price: float
+    host_is_superhost_int: int
+    availability_365: int
+    session_count: int
+    price_vs_neighbourhood: float
+    room_type: str
 
-        df = pd.DataFrame([input_data])
 
-        if random.random() > 0.5:
-            model = model_baseline
-            model_name = "Baseline Model"
-            group = "A"
-        else:
-            model = model_target
-            model_name = "Target Model"
-            group = "B"
+@app.post("/predict")
+def predict(data: ListingData) -> dict:
+    input_data = data.model_dump()
 
-        features = [
-            "number_of_reviews",
-            "review_scores_rating",
-            "host_is_superhost_int",
-            "availability_365",
-            "avg_price_calendar",
-            "std_price_calendar",
-            "session_count",
-            "price_vs_neighbourhood",
-            "room_type",
-        ]
+    df = pd.DataFrame([input_data])
 
-        X = df[features]
-        prediction = int(model.predict(X)[0])
+    if random.random() > 0.5:
+        model = model_baseline
+        model_name = "Baseline Model"
+        group = "A"
+    else:
+        model = model_target
+        model_name = "Target Model"
+        group = "B"
 
-        log_entry = {
-            "timestamp": pd.Timestamp.now().isoformat(),
-            "input_data": input_data,
-            "model_used": model_name,
-            "ab_test_group": group,
-            "prediction": int(prediction),
-        }
+    features = [
+        "number_of_reviews",
+        "listing_price",
+        "price_vs_neighbourhood",
+        "host_is_superhost_int",
+        "availability_365",
+        "session_count",
+        "room_type",
+    ]
 
-        os.makedirs("logs", exist_ok=True)
-        with open("logs/prediction_logs.jsonl", "a") as fh:
-            fh.write(json.dumps(log_entry) + "\n")
+    X = df[features]
+    prediction = int(model.predict(X)[0])
 
-        return {
-            "prediction": prediction,
-            "model_used": model_name,
-            "ab_test_group": group,
-        }
-else:
-    print("Segmentation fault. :(")
+    return {
+        "prediction": prediction,
+        "model_used": model_name,
+        "ab_test_group": group,
+    }
