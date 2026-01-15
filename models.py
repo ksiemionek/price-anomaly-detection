@@ -30,9 +30,7 @@ available_cols = [c for c in cols if c in suspects.columns]
 
 os.makedirs("logs", exist_ok=True)
 suspects[available_cols].to_csv("logs/suspects.csv", index=False)
-print(f"Saved {len(suspects)} suspects to logs/suspects.csv with detailed columns.")
-
-print(f"Before: {df['is_suspicious'].sum()}")
+print(f"Saved {len(suspects)} suspects to logs/suspects.csv")
 
 synthetic_data = [utilities.generate_random_suspicious() for _ in range(80)]
 synthetic_data += [utilities.generate_random_tricky() for _ in range(80)]
@@ -44,8 +42,6 @@ for col in df.columns:
         df_synthetic[col] = 0 if pd.api.types.is_numeric_dtype(df[col]) else "Unknown"
 
 df = pd.concat([df, df_synthetic], ignore_index=True)
-
-print(f"After: {df['is_suspicious'].sum()}")
 
 features = [
     "number_of_reviews",
@@ -62,9 +58,7 @@ target = "is_suspicious"
 X = df[features]
 y = df[target]
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, stratify=y, random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 print("Base model (Logistic Regression)")
 model_base = utilities.get_model_pipeline("baseline")

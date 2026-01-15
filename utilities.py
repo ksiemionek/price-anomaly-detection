@@ -62,7 +62,6 @@ def create_labels_advanced(df):
     df.loc[df["number_of_reviews"] > 15, "is_suspicious"] = 0
     df.loc[df["availability_365"] < 150, "is_suspicious"] = 0
 
-    print(f"{df['is_suspicious'].sum()} suspicious offers")
     return df
 
 
