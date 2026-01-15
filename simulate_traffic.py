@@ -2,8 +2,6 @@ import json
 import os
 import random
 import requests
-import time
-import pandas as pd
 
 URL = "http://127.0.0.1:8000/predict"
 RESULT_FILE = "logs/simulation_results.jsonl"

@@ -3,30 +3,7 @@ import json
 import pandas as pd
 from sklearn.metrics import classification_report
 
-from utilities import create_labels_advanced, spank
-
-LOG_FILE = "logs/prediction_logs.jsonl"
-
-
-def prepare_data(df):
-    if "availability_365" not in df.columns:
-        df["availability_365"] = 0
-        df["availability_rate"] = 0
-    else:
-        df["availability_rate"] = df["availability_365"] / 365.0
-
-    required_columns = [
-        "number_of_reviews",
-        "avg_price_calendar",
-        "max_price_calendar",
-        "price_vs_neighbourhood",
-        "session_count",
-    ]
-    for col in required_columns:
-        if col not in df.columns:
-            df[col] = 0
-
-    return df
+LOG_FILE = "logs/simulation_results.jsonl"
 
 
 def evaluate_logs():
@@ -37,29 +14,15 @@ def evaluate_logs():
         with open(LOG_FILE, "r") as fh:
             for line in fh:
                 if line.strip():
-                    entry = json.loads(line)
-                    flat_entry = entry.copy()
-                    if "input_data" in flat_entry:
-                        input_data = flat_entry["input_data"]
-                        del flat_entry["input_data"]
-                        flat_entry.update(input_data)
-                    data.append(flat_entry)
+                    data.append(json.loads(line))
     except FileNotFoundError:
-        print("Log file not found. 🥺")
-        for i in range(2):
-            spank()
+        print("Log file not found.")
         return
     if not data:
-        print("No log entries found. 😭")
+        print("No log entries found.")
         return
 
-    try:
-        df = pd.DataFrame(data)
-        df = prepare_data(df)
-        df = create_labels_advanced(df)
-    except Exception as e:
-        print(f"Error creating DataFrame: {e} 😭😭😭")
-        return
+    df = pd.DataFrame(data)
 
     print("\n" + "-" * 10 + "A/B TEST RESULTS" + "-" * 10)
     print(f"total predictions: {len(df)}")
@@ -83,22 +46,6 @@ def evaluate_logs():
                 zero_division=0,
             )
         )
-
-        tp = ((group_df["prediction"] == 1) & (group_df["is_suspicious"] == 1)).sum()
-        fp = ((group_df["prediction"] == 1) & (group_df["is_suspicious"] == 0)).sum()
-
-        total_impostors = group_df["is_suspicious"].sum()
-
-        # precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        # recall = tp / total_impostors if total_impostors > 0 else 0.0
-
-        # # print(f"- Total interventions: {tp + fp}")
-        # # print(f"- Actual sus count: {total_impostors}")
-        # # print(f"- Valid (TP): {tp}")
-        # # print(f"- Invalid (FP): {fp}")
-        # # print(f"- Missed (FN): {total_impostors - tp}")
-        # # print(f"= Precision: {precision:.2%}")
-        # # print(f"= Recall: {recall:.2%}")
 
 
 if __name__ == "__main__":
