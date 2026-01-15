@@ -95,7 +95,7 @@ def get_model_pipeline(model_type):
     return make_pipeline(preprocessor, model)
 
 
-def generate_synthetic_suspicious():
+def generate_random_suspicious():
     return {
         "number_of_reviews": random.randint(0, 15),
         "listing_price": random.uniform(250, 12000),
@@ -108,7 +108,7 @@ def generate_synthetic_suspicious():
     }
 
 
-def generate_synthetic_tricky():
+def generate_random_tricky():
     return {
         "number_of_reviews": random.randint(6, 100),
         "listing_price": random.uniform(250, 2000),
@@ -116,6 +116,18 @@ def generate_synthetic_tricky():
         "availability_365": random.randint(50, 300),
         "session_count": random.randint(5, 50),
         "price_vs_neighbourhood": random.uniform(1.5, 4.0),
+        "room_type": random.choice(["Entire home/apt", "Private room", "Shared room"]),
+        "is_suspicious": 0,
+    }
+
+def generate_random_safe():
+    return {
+        "number_of_reviews": random.randint(20, 500),
+        "listing_price": random.uniform(50, 400),
+        "host_is_superhost_int": 1 if random.random() > 0.6 else 0,
+        "availability_365": random.randint(0, 200),
+        "session_count": random.randint(10, 150),
+        "price_vs_neighbourhood": random.uniform(0.01, 1.35),
         "room_type": random.choice(["Entire home/apt", "Private room", "Shared room"]),
         "is_suspicious": 0,
     }

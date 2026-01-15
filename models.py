@@ -34,8 +34,8 @@ print(f"Saved {len(suspects)} suspects to logs/suspects.csv with detailed column
 
 print(f"Before: {df['is_suspicious'].sum()}")
 
-synthetic_data = [utilities.generate_synthetic_suspicious() for _ in range(80)]
-synthetic_data += [utilities.generate_synthetic_tricky() for _ in range(80)]
+synthetic_data = [utilities.generate_random_suspicious() for _ in range(80)]
+synthetic_data += [utilities.generate_random_tricky() for _ in range(80)]
 
 df_synthetic = pd.DataFrame(synthetic_data)
 

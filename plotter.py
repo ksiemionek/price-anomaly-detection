@@ -1,18 +1,12 @@
 import os
 import pickle
-
+import utilities
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.metrics import precision_score, recall_score
 
-from simulate_traffic import (
-    generate_random_safe,
-    generate_random_suspicious,
-    generate_random_tricky,
-)
-from utilities import load_data, prepare_data
 
 OUTPUT_DIR = "plots"
 
@@ -24,37 +18,36 @@ def ensure_output_dir():
 
 def plot_correlation_heatmap(df):
     cols_to_corr = [
-        "max_price_calendar",
+        "is_suspicious",
+        "listing_price",
         "number_of_reviews",
-        "review_scores_rating",
         "session_count",
         "price_vs_neighbourhood",
         "availability_365",
     ]
 
+    existing_cols = [c for c in cols_to_corr if c in df.columns]
+
+    if len(existing_cols) < 2:
+        print("Not enough features for correlation heatmap")
+        return
+
     ensure_output_dir()
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(df[cols_to_corr].corr(), annot=True, cmap="coolwarm", fmt=".2f")
+    sns.heatmap(df[existing_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Feature Correlation Heatmap")
 
     save_path = os.path.join(OUTPUT_DIR, "correlation_heatmap.png")
     plt.savefig(save_path, bbox_inches="tight", dpi=300)
     print(f"Correlation plot saved to {save_path}")
+    plt.close()
 
 
 def load_models():
     models = {}
-    path_base = (
-        "models/model_baseline.pkl"
-        if os.path.exists("models/model_baseline.pkl")
-        else "model_baseline.pkl"
-    )
-    path_target = (
-        "models/model_target.pkl"
-        if os.path.exists("models/model_target.pkl")
-        else "model_target.pkl"
-    )
+    path_base = "models/model_baseline.pkl"
+    path_target = "models/model_target.pkl"
 
     with open(path_base, "rb") as f:
         models["baseline"] = pickle.load(f)
@@ -70,16 +63,20 @@ def run_simulation_step(models, impostor_rate, tricky_rate, samples=500):
     for _ in range(samples):
         rand = np.random.random()
         if rand < impostor_rate:
-            data.append(generate_random_suspicious())
+            pack = utilities.generate_random_suspicious()
+            data.append(pack["data"])
             y_true.append(1)
         elif rand < (impostor_rate + tricky_rate):
-            data.append(generate_random_tricky())
+            pack = utilities.generate_random_tricky()
+            data.append(pack["data"])
             y_true.append(0)
         else:
-            data.append(generate_random_safe())
+            pack = utilities.generate_random_safe()
+            data.append(pack["data"])
             y_true.append(0)
 
     df = pd.DataFrame(data)
+
     results = {}
 
     for name, model in models.items():
@@ -150,8 +147,9 @@ def plot_sensitivity_analysis():
 
 if __name__ == "__main__":
     try:
-        listings, calendar, sessions = load_data()
-        df = prepare_data(listings, calendar, sessions)
+        listings, sessions = utilities.load_data()
+        df = utilities.prepare_data(listings, sessions)
+        df = utilities.create_labels_advanced(df)
         plot_correlation_heatmap(df)
     except Exception as e:
         print(f"data not found: {e}")
