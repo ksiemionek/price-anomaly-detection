@@ -26,7 +26,7 @@ uvicorn app:app --reload
 
 Aby przetestować działanie systemu, należy uruchomić symulator. Skrypt ten wysyła serię zapytań do API, wstrzykując określony procent ofert anomalnych w celu weryfikacji modeli:
 
-```
+```bash
 python3 simulate_traffic.py
 ```
 
@@ -47,12 +47,9 @@ Główny punkt wejścia do systemu. Przyjmuje dane o ofercie, a następnie zwrac
 **_Struktura danych wejściowych (JSON)_**:
 
 - `number_of_reviews (int)` - liczba recenzji oferty
-- `review_scores_rating (float)` - średnia ocena (0-100)
+- `listing_price (float)` - aktualna cena oferty
 - `host_is_superhost_int (int)` - zmienna oznaczająca czy gospodarz jest superhostem (0-1)
 - `availability_365 (int)` - liczba dostępnych dni w roku
-- `avg_price_calendar (float)` - średnia cena
-- `max_price_calendar (float)` - maksymalna cena
-- `std_price_calendar (float)` - odchylenie standardowe ceny
 - `session_count (int)` - liczba rezerwacji oferty
 - `price_vs_neighbourhood (float)` - proporcjonalny stosunek ceny do średniej dzielnicy
 - `room_type (str)` - typ pokoju ("Entire home/apt" / "Private room" / "Shared room")
@@ -65,15 +62,12 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "number_of_reviews": 12,
-  "review_scores_rating": 95.0,
-  "host_is_superhost_int": 1,
-  "availability_365": 150,
-  "avg_price_calendar": 120.5,
-  "max_price_calendar": 150.0,
-  "std_price_calendar": 15.2,
-  "session_count": 45,
-  "price_vs_neighbourhood": 1.1,
+  "number_of_reviews": 0,
+  "listing_price": 0,
+  "price_vs_neighbourhood": 0,
+  "host_is_superhost_int": 0,
+  "availability_365": 0,
+  "session_count": 0,
   "room_type": "Entire home/apt"
 }'
 ```
