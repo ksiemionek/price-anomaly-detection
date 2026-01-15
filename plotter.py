@@ -64,15 +64,15 @@ def run_simulation_step(models, impostor_rate, tricky_rate, samples=500):
         rand = np.random.random()
         if rand < impostor_rate:
             pack = utilities.generate_random_suspicious()
-            data.append(pack["data"])
+            data.append(pack)
             y_true.append(1)
         elif rand < (impostor_rate + tricky_rate):
             pack = utilities.generate_random_tricky()
-            data.append(pack["data"])
+            data.append(pack)
             y_true.append(0)
         else:
             pack = utilities.generate_random_safe()
-            data.append(pack["data"])
+            data.append(pack)
             y_true.append(0)
 
     df = pd.DataFrame(data)
