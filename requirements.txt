@@ -5,3 +5,4 @@ zstandard
 fastapi
 uvicorn
 pydantic
+requests
