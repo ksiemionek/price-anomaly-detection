@@ -1,60 +1,45 @@
-# IUM - Dokumentacja projektu (Etap 2)
+# Price Anomaly Detection
 
-### Kacper Siemionek, Michał Pędziwiatr
+Price anomaly detection for rental listings, served via a FastAPI microservice with A/B testing between two models.
 
-## Instrukcja uruchomienia
+## How it works
+ 
+The system exposes a `/predict` endpoint that classifies rental offers as legitimate (0) or suspicious (1). Incoming requests are automatically split between a baseline model (group A) and a target model (group B) for live A/B comparison.
 
-### 1. Wymagania
-
-Projekt wymaga środowiska Python 3.x+ oraz instalancji zależności. Zalecane użycie środowiska wirtualnego:
-
+## Setup
+ 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Uruchomienie mikroserwisu
-
-Serwer API nasłuchuje na porcie 8000. Należy go uruchomić w osobnym terminalu:
-
+## Running
+ 
 ```bash
+# Start the API server
 uvicorn app:app --reload
-```
-
-### 3. Symulacja ruchu
-
-Aby przetestować działanie systemu, należy uruchomić symulator. Skrypt ten wysyła serię zapytań do API, wstrzykując określony procent ofert anomalnych w celu weryfikacji modeli:
-
-```bash
+ 
+# Simulate traffic with injected anomalies
 python3 simulate_traffic.py
-```
-
-### 4. Ewaluacja wyników
-
-Po zebraniu logów z symulacji, skrypt przetwarza plik prediction_logs.jsonl, a następnie wylicza metryki jakości dla obu grup testowych (A i B):
-
-```bash
+ 
+# Evaluate A/B results from logs/simulation_results.jsonl
 python3 evaluate_logs.py
 ```
 
-## Opis API
+## API
+ 
+| Field | Type | Description |
+|---|---|---|
+| `number_of_reviews` | int | Number of listing reviews |
+| `listing_price` | float | Current listing price |
+| `host_is_superhost_int` | int | Superhost flag (0 or 1) |
+| `availability_365` | int | Days available per year |
+| `session_count` | int | Number of bookings |
+| `price_vs_neighbourhood` | float | Price relative to neighbourhood average |
+| `room_type` | str | `"Entire home/apt"` / `"Private room"` / `"Shared room"` |
 
-### Endpoint `POST /predict`
-
-Główny punkt wejścia do systemu. Przyjmuje dane o ofercie, a następnie zwraca ocenę (0 - uczciwa, 1 - podejrzana) oraz użyty podczas ewaluacji model. Wybór modelu (bazowy vs docelowy) odbywa się automatycznie po stronie serwera.
-
-**_Struktura danych wejściowych (JSON)_**:
-
-- `number_of_reviews (int)` - liczba recenzji oferty
-- `listing_price (float)` - aktualna cena oferty
-- `host_is_superhost_int (int)` - zmienna oznaczająca czy gospodarz jest superhostem (0-1)
-- `availability_365 (int)` - liczba dostępnych dni w roku
-- `session_count (int)` - liczba rezerwacji oferty
-- `price_vs_neighbourhood (float)` - proporcjonalny stosunek ceny do średniej dzielnicy
-- `room_type (str)` - typ pokoju ("Entire home/apt" / "Private room" / "Shared room")
-
-**_Przykładowe użycie_**:
+**Request**:
 
 ```bash
 curl -X 'POST' \
@@ -71,9 +56,8 @@ curl -X 'POST' \
   "room_type": "Entire home/apt"
 }'
 ```
-
-**_Przykładowa odpowiedź serwera_**:
-
+ 
+**Response:**
 ```json
 {
   "prediction": 0,
@@ -81,3 +65,9 @@ curl -X 'POST' \
   "ab_test_group": "B"
 }
 ```
+
+## Documentation
+ 
+Full project reports (in Polish) are available in the repository root:
+- `IUM - Dokumentacja wstępna.pdf` - initial specification
+- `IUM dokumentacja koncowa.pdf` - final report
